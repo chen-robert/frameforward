@@ -32,6 +32,27 @@ const URL = clean(flags.url);
 const PORT = flags.port;
 
 http.createServer((req, res) => {
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(`[${ip}] ${req.method} ${req.url}`);
+  
+  const padding = "  > ";
+  if(flags.verbose) {
+    for([header, val] of Object.entries(req.headers)) {
+      console.log(padding + `${header}: ${val}`);
+    }
+		
+		let body = "";
+    req.on('readable', function() {
+      body += req.read();
+    });
+    req.on('end', function() {
+      console.log(padding + `[${ip}] :` + body);
+			console.log();
+    });
+
+    console.log();
+  }
+
   res.writeHead(200, {"Content-Type" : "text/html"});
   res.end(`
     <html>
@@ -53,4 +74,6 @@ http.createServer((req, res) => {
     </html>
   `);
 
-}).listen(PORT, () => console.log(`Started proxying to [${URL}] on port ${PORT}`));
+}).listen(PORT, () => console.log(`Started ${
+    flags.verbose? "verbose ": ""
+  }proxying to [${URL}] on port ${PORT}`));
