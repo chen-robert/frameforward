@@ -1,6 +1,6 @@
 {
   "name": "frameforward",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple package to serve an iFrame",
   "homepage": "https://github.com/chen-robert/frameforward#readme",
   "main": "index.js",
